@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: greeting-vs
+spec:
+  gateways:
+    - greeting-gw
+  hosts:
+    - "*"
+  http:
+    - match:
+        - uri:
+            exact: "/uno"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: greeting
+            port: 
+              number: 8080
+            subset: v1
+      mirror:          
+        host: greeting
+        port:
+          number: 8080
+        subset: v3
+      mirrorPercentage:
+        value: 50
+    - match:
+        - uri:
+            exact: "/dos"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: greeting
+            port:
+              number: 8080
+            subset: v2      
